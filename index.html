@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tinh Diem Tong Ket</title>
-    <!-- Thêm favicon -->
     <link rel="icon" href="example.png" type="image/png">
     <style>
         body {
@@ -98,11 +97,13 @@
     <!-- Trình phát nhạc -->
     <div class="audio-player">
         <h3>Nhạc nền</h3>
-        <audio id="audioPlayer" controls>
-            <source src="https://your-github-username.github.io/your-repository-name/huyenvi.mp3" type="audio/mpeg">
+        <audio id="audioPlayer" controls autoplay loop>
+            <source src="media/huyenvi.mp3" type="audio/mpeg">
             Trình duyệt của bạn không hỗ trợ thẻ audio.
         </audio>
-        <button onclick="playMusic()">Bấm để phát nhạc</button>
+        <p>
+            Nếu nhạc không phát, vui lòng kiểm tra tệp nhạc <strong>huyenvi.mp3</strong> trong thư mục <code>media</code>.
+        </p>
     </div>
 
     <script>
@@ -182,11 +183,6 @@
                 ? `Chuc mung! Diem tong ket cua ban la ${total.toFixed(2)} (Qua mon)` 
                 : `Rat tiec! Diem tong ket cua ban la ${total.toFixed(2)} (Rot mon)`;
             resultDiv.style.color = total >= 4 ? "green" : "red";
-        }
-
-        function playMusic() {
-            var audio = document.getElementById('audioPlayer');
-            audio.play();
         }
     </script>
 </body>
