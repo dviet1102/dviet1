@@ -95,13 +95,14 @@
         </div>
     </div>
 
-    <!-- Trình phát nhạc với autoplay -->
+    <!-- Trình phát nhạc -->
     <div class="audio-player">
         <h3>Nhạc nền</h3>
-        <audio controls autoplay>
+        <audio id="audioPlayer" controls>
             <source src="https://your-github-username.github.io/your-repository-name/huyenvi.mp3" type="audio/mpeg">
             Trình duyệt của bạn không hỗ trợ thẻ audio.
         </audio>
+        <button onclick="playMusic()">Bấm để phát nhạc</button>
     </div>
 
     <script>
@@ -181,6 +182,11 @@
                 ? `Chuc mung! Diem tong ket cua ban la ${total.toFixed(2)} (Qua mon)` 
                 : `Rat tiec! Diem tong ket cua ban la ${total.toFixed(2)} (Rot mon)`;
             resultDiv.style.color = total >= 4 ? "green" : "red";
+        }
+
+        function playMusic() {
+            var audio = document.getElementById('audioPlayer');
+            audio.play();
         }
     </script>
 </body>
