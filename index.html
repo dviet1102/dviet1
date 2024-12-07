@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tinh Diem Tong Ket</title>
-    <!-- Thêm favicon -->
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Thêm favicon từ GitHub -->
+    <link rel="icon" href="https://github.com/username/repository-name/raw/main/favicon.ico" type="image/x-icon">
 
     <style>
         body {
@@ -57,7 +57,43 @@
         <button onclick="showForm('lyThuyet')">Mon khong thuc hanh</button>
         <button onclick="showForm('thucHanh')">Mon co thuc hanh</button>
 
-        <!-- Form và script tiếp theo của bạn ở đây -->
+        <div id="lyThuyet" class="hidden">
+            <h3>Mon khong thuc hanh</h3>
+            <label for="numRegular1">So diem thuong xuyen:</label>
+            <input type="number" id="numRegular1" placeholder="Nhap so luong diem thuong xuyen" onchange="generateRegularInputs('regularContainer1', 'numRegular1')">
+            <div id="regularContainer1"></div>
+
+            <label for="midterm1">Diem giua ky:</label>
+            <input type="number" id="midterm1" placeholder="Nhap diem giua ky (e.g., 5.0)">
+
+            <label for="final1">Diem cuoi ky:</label>
+            <input type="number" id="final1" placeholder="Nhap diem cuoi ky">
+
+            <button onclick="calculateNoPractice()">Tinh diem tong ket</button>
+
+            <div class="result" id="result1"></div>
+        </div>
+
+        <div id="thucHanh" class="hidden">
+            <h3>Mon co thuc hanh</h3>
+            <label for="numRegular2">So luong diem thuong xuyen:</label>
+            <input type="number" id="numRegular2" placeholder="Nhap so luong diem thuong xuyen" onchange="generateRegularInputs('regularContainer2', 'numRegular2')">
+            <div id="regularContainer2"></div>
+
+            <label for="midterm2">Diem giua ky:</label>
+            <input type="number" id="midterm2" placeholder="Nhap diem giua ky (e.g., 5.0)">
+
+            <label for="final2">Diem cuoi ky:</label>
+            <input type="number" id="final2" placeholder="Nhap diem cuoi ky">
+
+            <label for="numPractice">So luong diem thuc hanh:</label>
+            <input type="number" id="numPractice" placeholder="Nhap so luong diem thuc hanh" onchange="generatePracticeInputs('practiceContainer', 'numPractice')">
+            <div id="practiceContainer"></div>
+
+            <button onclick="calculateWithPractice()">Tinh diem tong ket</button>
+
+            <div class="result" id="result2"></div>
+        </div>
     </div>
 
     <script>
@@ -65,6 +101,91 @@
             document.getElementById('lyThuyet').classList.add('hidden');
             document.getElementById('thucHanh').classList.add('hidden');
             document.getElementById(type).classList.remove('hidden');
+        }
+
+        function generateRegularInputs(containerId, inputId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Clear previous inputs
+            const numRegular = parseInt(document.getElementById(inputId).value) || 0;
+
+            for (let i = 0; i < numRegular; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = `Nhap diem thuong xuyen ${i + 1}`;
+                input.classList.add('regularInput');
+                container.appendChild(input);
+            }
+        }
+
+        function generatePracticeInputs(containerId, inputId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Clear previous inputs
+            const numPractice = parseInt(document.getElementById(inputId).value) || 0;
+
+            for (let i = 0; i < numPractice; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = `Nhap diem thuc hanh ${i + 1}`;
+                input.classList.add('practiceInput');
+                container.appendChild(input);
+            }
+        }
+
+        function calculateAverageRegular(containerId) {
+            const inputs = document.querySelectorAll(`#${containerId} .regularInput`);
+            let total = 0;
+            inputs.forEach(input => {
+                total += parseFloat(input.value) || 0;
+            });
+            return inputs.length ? total / inputs.length : 0;
+        }
+
+        function calculateAveragePractice() {
+            const inputs = document.querySelectorAll('#practiceContainer .practiceInput');
+            let total = 0;
+            inputs.forEach(input => {
+                total += parseFloat(input.value) || 0;
+            });
+            return inputs.length ? total / inputs.length : 0;
+        }
+
+        function calculateNoPractice() {
+            const regular = calculateAverageRegular('regularContainer1');
+            const midterm = parseFloat(document.getElementById('midterm1').value) || 0;
+            const final = parseFloat(document.getElementById('final1').value) || 0;
+
+            const total = ((regular * 20) + (midterm * 30) + (final * 50)) / 100;
+
+            const resultDiv = document.getElementById('result1');
+            if (total >= 4) {
+                resultDiv.textContent = `Chuc mung! Diem tong ket cua ban la ${total.toFixed(2)} (Qua mon)`;
+                resultDiv.style.color = "green";
+            } else {
+                resultDiv.textContent = `Rat tiec! Diem tong ket cua ban la ${total.toFixed(2)} (Rot mon)`;
+                resultDiv.style.color = "red";
+            }
+        }
+
+        function calculateWithPractice() {
+            const regular = calculateAverageRegular('regularContainer2');
+            const midterm = parseFloat(document.getElementById('midterm2').value) || 0;
+            const final = parseFloat(document.getElementById('final2').value) || 0;
+            const practice = calculateAveragePractice();
+
+            const theoryWeight = 3; // So tin chi ly thuyet
+            const practiceWeight = 1; // So tin chi thuc hanh
+
+            const theoryScore = ((regular * 20) + (midterm * 30) + (final * 50)) / 100;
+            const total = ((theoryScore * theoryWeight) + (practice * practiceWeight)) / (theoryWeight + practiceWeight);
+
+            const resultDiv = document.getElementById('result2');
+            if (total >= 4) {
+                resultDiv.textContent = `Chuc mung! Diem tong ket cua ban la ${total.toFixed(2)} (Qua mon)`;
+                resultDiv.style.color = "green";
+            } else {
+                resultDiv.textContent = `Rat tiec! Diem tong ket cua ban la ${total.toFixed(2)} (Rot mon)`;
+                resultDiv.style.color = "red";
+            }
         }
     </script>
 </body>
