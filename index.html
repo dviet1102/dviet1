@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tinh Diem Tong Ket</title>
-    <!-- Sử dụng example.png làm favicon -->
     <link rel="icon" href="example.png" type="image/png">
 
     <style>
@@ -111,21 +110,57 @@
             }
         }
 
+        function generatePracticeInputs(containerId, inputId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const numPractice = parseInt(document.getElementById(inputId).value) || 0;
+
+            for (let i = 0; i < numPractice; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = `Diem thuc hanh ${i + 1}`;
+                input.classList.add('practiceInput');
+                container.appendChild(input);
+            }
+        }
+
+        function calculateAverage(inputs) {
+            let total = 0;
+            inputs.forEach(input => {
+                total += parseFloat(input.value) || 0;
+            });
+            return inputs.length ? total / inputs.length : 0;
+        }
+
         function calculateNoPractice() {
-            const regularContainer = document.querySelectorAll('#regularContainer1 .regularInput');
+            const regularInputs = document.querySelectorAll('#regularContainer1 .regularInput');
             const midterm = parseFloat(document.getElementById('midterm1').value) || 0;
             const final = parseFloat(document.getElementById('final1').value) || 0;
 
-            let totalRegular = 0;
-            regularContainer.forEach(input => {
-                totalRegular += parseFloat(input.value) || 0;
-            });
-            const avgRegular = totalRegular / regularContainer.length || 0;
-
+            const avgRegular = calculateAverage([...regularInputs]);
             const total = ((avgRegular * 20) + (midterm * 30) + (final * 50)) / 100;
 
-            const result = document.getElementById('result1');
-            result.textContent = `Diem tong ket: ${total.toFixed(2)}`;
+            const resultDiv = document.getElementById('result1');
+            resultDiv.textContent = `Diem tong ket: ${total.toFixed(2)}`;
+        }
+
+        function calculateWithPractice() {
+            const regularInputs = document.querySelectorAll('#regularContainer2 .regularInput');
+            const practiceInputs = document.querySelectorAll('#practiceContainer .practiceInput');
+            const midterm = parseFloat(document.getElementById('midterm2').value) || 0;
+            const final = parseFloat(document.getElementById('final2').value) || 0;
+
+            const avgRegular = calculateAverage([...regularInputs]);
+            const avgPractice = calculateAverage([...practiceInputs]);
+
+            const theoryWeight = 3; // Tin chi ly thuyet
+            const practiceWeight = 1; // Tin chi thuc hanh
+
+            const theoryScore = ((avgRegular * 20) + (midterm * 30) + (final * 50)) / 100;
+            const total = ((theoryScore * theoryWeight) + (avgPractice * practiceWeight)) / (theoryWeight + practiceWeight);
+
+            const resultDiv = document.getElementById('result2');
+            resultDiv.textContent = `Diem tong ket: ${total.toFixed(2)}`;
         }
     </script>
 </body>
